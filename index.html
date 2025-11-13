@@ -1,779 +1,122 @@
 <!doctype html>
 <html lang="pt-BR">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Devocional 2026</title>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-        body {
-            box-sizing: border-box;
-        }
-        .devotional-card {
-            transition: all 0.3s ease;
-        }
-        .devotional-card:hover {
-            transform: translateY(-2px);
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-  <style>@view-transition { navigation: auto; }</style>
- </head>
- <body class="min-h-full bg-gradient-to-br from-blue-50 to-indigo-100">
-  <div class="container mx-auto px-4 py-8 max-w-4xl"><!-- Header -->
-   <header class="text-center mb-8">
-    <h1 id="app-title" class="text-4xl font-bold text-indigo-800 mb-4">Devocional 2026</h1>
-    <p id="welcome-message" class="text-lg text-gray-700 mb-6">Sua jornada espiritual diária através do ano</p><!-- Navigation -->
-    <div class="flex flex-wrap justify-center gap-4 mb-6"><button id="today-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"> Hoje </button> <button id="calendar-btn" class="bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 px-6 py-2 rounded-lg font-medium transition-colors"> Calendário </button> <button id="favorites-btn" class="bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 px-6 py-2 rounded-lg font-medium transition-colors"> Favoritos </button> <button id="progress-btn" class="bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 px-6 py-2 rounded-lg font-medium transition-colors"> Progresso </button>
-    </div>
-   </header><!-- Today's Devotional -->
-   <main id="today-view" class="fade-in">
-    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
-     <div class="flex justify-between items-start mb-6">
-      <div>
-       <h2 id="today-date" class="text-2xl font-bold text-gray-800 mb-2"></h2>
-       <p id="today-verse-ref" class="text-indigo-600 font-medium"></p>
-      </div><button id="favorite-btn" class="text-2xl hover:scale-110 transition-transform"> ⭐ </button>
-     </div>
-     <div class="mb-6">
-      <p id="today-verse" class="text-lg italic text-gray-700 mb-4 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-400"></p>
-     </div>
-     <div class="mb-6">
-      <h3 class="text-xl font-semibold text-gray-800 mb-3">Reflexão</h3>
-      <div id="today-reflection" class="text-gray-700 leading-relaxed space-y-3"></div>
-     </div>
-     <div class="mb-6">
-      <h3 class="text-xl font-semibold text-gray-800 mb-3">Oração</h3>
-      <p id="today-prayer" class="text-gray-700 italic leading-relaxed"></p>
-     </div>
-     <div class="mb-6">
-      <h3 class="text-xl font-semibold text-gray-800 mb-3">Pedido de Oração</h3>
-      <p id="today-prayer-request" class="text-gray-700 leading-relaxed mb-3"></p><textarea id="personal-prayer-request" placeholder="Escreva aqui seus pedidos pessoais de oração..." class="w-full p-3 border border-gray-300 rounded-lg resize-none h-20 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"></textarea>
-     </div>
-     <div class="mb-6">
-      <h3 class="text-xl font-semibold text-gray-800 mb-3">Momento de Perdão</h3>
-      <p id="today-forgiveness" class="text-gray-700 leading-relaxed mb-3"></p><textarea id="forgiveness-reflection" placeholder="Reflita sobre perdão - a si mesmo, aos outros, ou peça perdão a Deus..." class="w-full p-3 border border-gray-300 rounded-lg resize-none h-20 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"></textarea>
-     </div>
-     <div class="border-t pt-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-3">Minhas Anotações</h3><textarea id="notes-input" placeholder="Escreva suas reflexões pessoais aqui..." class="w-full p-4 border border-gray-300 rounded-lg resize-none h-24 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
-      <div class="flex justify-between items-center mt-4"><button id="mark-complete-btn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"> ✓ Marcar como Lido </button>
-       <div class="flex gap-2"><button id="prev-day-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"> ← Anterior </button> <button id="next-day-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"> Próximo → </button>
-       </div>
-      </div>
-     </div>
-    </div>
-   </main><!-- Calendar View -->
-   <div id="calendar-view" class="hidden fade-in">
-    <div class="bg-white rounded-xl shadow-lg p-6">
-     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-800">Calendário 2026</h2>
-      <div class="flex gap-2"><button id="prev-month-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">←</button> <span id="current-month" class="px-4 py-2 font-medium text-gray-800"></span> <button id="next-month-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">→</button>
-      </div>
-     </div>
-     <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
-    </div>
-   </div><!-- Favorites View -->
-   <div id="favorites-view" class="hidden fade-in">
-    <div class="bg-white rounded-xl shadow-lg p-6">
-     <h2 class="text-2xl font-bold text-gray-800 mb-6">Devocionais Favoritos</h2>
-     <div id="favorites-list" class="space-y-4"></div>
-    </div>
-   </div><!-- Progress View -->
-   <div id="progress-view" class="hidden fade-in">
-    <div class="bg-white rounded-xl shadow-lg p-6">
-     <h2 class="text-2xl font-bold text-gray-800 mb-6">Seu Progresso</h2>
-     <div class="grid md:grid-cols-2 gap-6">
-      <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-6 rounded-lg">
-       <h3 class="text-lg font-semibold mb-2">Dias Completados</h3>
-       <p id="completed-count" class="text-3xl font-bold">0</p>
-       <p class="text-green-100">de 365 dias</p>
-      </div>
-      <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-6 rounded-lg">
-       <h3 class="text-lg font-semibold mb-2">Sequência Atual</h3>
-       <p id="streak-count" class="text-3xl font-bold">0</p>
-       <p class="text-blue-100">dias consecutivos</p>
-      </div>
-     </div>
-     <div class="mt-6">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Progresso Mensal</h3>
-      <div id="monthly-progress" class="space-y-3"></div>
-     </div>
-    </div>
-   </div>
-  </div>
-  <script>
-        // Devotional content for 2026
-        const devotionalContent = {
-            "2026-01-01": {
-                verse: "Porque eu bem sei os pensamentos que tenho a vosso respeito, diz o Senhor; pensamentos de paz e não de mal, para vos dar o fim que esperais.",
-                reference: "Jeremias 29:11",
-                reflection: "Começamos um novo ano com a certeza de que Deus tem planos maravilhosos para nós. Não importa o que o ano passado trouxe, hoje é um novo começo. Deus conhece cada detalhe do nosso futuro e Seus planos são sempre de bem e não de mal. Que possamos confiar em Sua direção e caminhar com fé neste novo ano.",
-                prayer: "Senhor, obrigado por este novo ano que se inicia. Ajuda-me a confiar em Teus planos e a caminhar em Tua vontade. Que eu possa crescer espiritualmente e ser uma bênção para outros. Em nome de Jesus, amém.",
-                prayerRequest: "Ore por sabedoria para tomar decisões corretas neste novo ano. Peça a Deus que abençoe seus planos e projetos, e que Ele use você para impactar positivamente a vida de outras pessoas.",
-                forgiveness: "Neste início de ano, é tempo de deixar para trás mágoas e ressentimentos. Perdoe aqueles que te feriram no passado e peça perdão por suas próprias falhas. Deus nos oferece um recomeço limpo."
-            },
-            "2026-01-02": {
-                verse: "Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento.",
-                reference: "Provérbios 3:5",
-                reflection: "A confiança em Deus vai além do nosso entendimento limitado. Muitas vezes queremos compreender todos os detalhes antes de dar um passo, mas Deus nos chama para confiar Nele mesmo quando não entendemos o caminho. Nossa sabedoria é limitada, mas a de Deus é perfeita e infinita.",
-                prayer: "Pai celestial, ajuda-me a confiar em Ti de todo o meu coração. Quando as circunstâncias parecerem confusas, lembra-me de que Tua sabedoria é maior que a minha. Guia meus passos hoje. Amém.",
-                prayerRequest: "Peça a Deus discernimento para as decisões que precisa tomar. Ore por confiança para seguir Sua direção mesmo quando o caminho não estiver claro. Interceda por aqueles que estão enfrentando momentos de incerteza.",
-                forgiveness: "Reconheça diante de Deus as vezes que confiou mais em sua própria sabedoria do que Nele. Perdoe-se por decisões passadas que não deram certo e confie que Deus pode usar até mesmo nossos erros para o bem."
-            },
-            "2026-01-03": {
-                verse: "Tudo posso naquele que me fortalece.",
-                reference: "Filipenses 4:13",
-                reflection: "Esta não é uma promessa de que podemos fazer qualquer coisa que desejamos, mas sim que Cristo nos dá força para enfrentar qualquer situação que Ele permite em nossas vidas. Seja na abundância ou na escassez, na alegria ou na dificuldade, Cristo é nossa fonte de força e capacitação.",
-                prayer: "Jesus, obrigado por ser minha fonte de força. Quando me sentir fraco ou incapaz, lembra-me de que posso todas as coisas através de Ti. Fortalece-me para os desafios de hoje. Amém.",
-                prayerRequest: "Ore por força para enfrentar os desafios que estão diante de você. Peça a Deus que fortaleça aqueles que estão passando por dificuldades. Interceda por coragem para testemunhar do amor de Cristo.",
-                forgiveness: "Perdoe aqueles que duvidaram de sua capacidade ou te desencorajaram. Peça perdão por momentos em que você desanimou outros ou não acreditou no poder de Deus em sua vida."
-            }
-        };
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devocional 2026</title>
+    <script src="/_sdk/data_sdk.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-full bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 id="app-title" class="text-4xl font-bold text-indigo-800 mb-4">Devocional 2026</h1>
+            <p id="welcome-message" class="text-lg text-gray-700 mb-6">Sua jornada espiritual diária através do ano</p>
+            <!-- Navigation -->
+            <div class="flex flex-wrap justify-center gap-4 mb-6">
+                <button id="today-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">Hoje</button>
+                <button id="calendar-btn" class="bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 px-6 py-2 rounded-lg font-medium transition-colors">Calendário</button>
+                <button id="favorites-btn" class="bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 px-6 py-2 rounded-lg font-medium transition-colors">Favoritos</button>
+                <button id="progress-btn" class="bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 px-6 py-2 rounded-lg font-medium transition-colors">Progresso</button>
+            </div>
+        </header>
 
-        // Generate devotional content for the entire year 2026
-        function generateYearContent() {
-            const verses = [
-                { text: "O Senhor é o meu pastor; nada me faltará.", ref: "Salmos 23:1" },
-                { text: "Entrega o teu caminho ao Senhor; confia nele, e ele tudo fará.", ref: "Salmos 37:5" },
-                { text: "Porque onde estiver o vosso tesouro, aí estará também o vosso coração.", ref: "Mateus 6:21" },
-                { text: "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.", ref: "Mateus 11:28" },
-                { text: "E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus.", ref: "Romanos 8:28" },
-                { text: "Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.", ref: "Efésios 2:8" },
-                { text: "Posso todas as coisas em Cristo que me fortalece.", ref: "Filipenses 4:13" },
-                { text: "Mas os que esperam no Senhor renovarão as suas forças.", ref: "Isaías 40:31" },
-                { text: "O Senhor é bom, uma fortaleza no dia da angústia.", ref: "Naum 1:7" },
-                { text: "Porque eu sou o Senhor, teu Deus, que te toma pela tua mão direita.", ref: "Isaías 41:13" }
-            ];
-
-            const reflectionTemplates = [
-                "A Palavra de Deus hoje nos lembra da importância de confiar em Sua providência. Mesmo quando não compreendemos os caminhos do Senhor, podemos descansar na certeza de que Ele cuida de nós com amor perfeito.",
-                "Este versículo nos convida à reflexão sobre nossa dependência de Deus. Em um mundo que valoriza a autossuficiência, somos chamados a reconhecer nossa necessidade do Criador e a buscar Sua direção em todas as áreas da vida.",
-                "A promessa contida nestas palavras nos traz esperança e encorajamento. Deus não nos abandona nas dificuldades, mas caminha conosco, oferecendo Sua força e sabedoria para cada situação que enfrentamos.",
-                "Hoje somos desafiados a viver de acordo com os princípios do Reino de Deus. Isso significa colocar nossa fé em prática através de ações concretas de amor, perdão e serviço ao próximo.",
-                "A graça de Deus se manifesta de maneiras surpreendentes em nossa vida diária. Que possamos ter olhos para reconhecer Sua bondade e corações gratos por todas as bênçãos que recebemos."
-            ];
-
-            const prayerTemplates = [
-                "Senhor, obrigado por Tua Palavra que ilumina meu caminho. Ajuda-me a aplicar estes ensinamentos em minha vida diária e a crescer em meu relacionamento contigo. Em nome de Jesus, amém.",
-                "Pai celestial, que eu possa ser um reflexo do Teu amor neste mundo. Usa-me como instrumento de Tua paz e que minha vida glorifique Teu santo nome. Amém.",
-                "Deus de amor, fortalece minha fé e ajuda-me a confiar em Ti em todas as circunstâncias. Que eu possa ser uma bênção para outros hoje. Em Cristo Jesus, amém.",
-                "Senhor Jesus, obrigado por Teu sacrifício na cruz. Que eu possa viver de forma digna desta salvação e compartilhar Teu amor com todos ao meu redor. Amém.",
-                "Espírito Santo, guia-me em toda verdade e ajuda-me a discernir Tua vontade. Que meus pensamentos, palavras e ações sejam agradáveis a Ti. Amém."
-            ];
-
-            const prayerRequestTemplates = [
-                "Ore por sabedoria nas decisões importantes de sua vida. Peça a Deus que abençoe sua família e amigos. Interceda por aqueles que ainda não conhecem o amor de Cristo.",
-                "Peça a Deus força para superar os desafios que enfrenta. Ore por proteção divina sobre sua vida e de seus entes queridos. Interceda pelos líderes de sua comunidade e nação.",
-                "Ore por oportunidades de servir ao próximo e glorificar a Deus. Peça discernimento espiritual para reconhecer a vontade divina. Interceda por cura para os enfermos.",
-                "Peça a Deus que use você como instrumento de Sua paz. Ore por provisão para suas necessidades e das pessoas ao seu redor. Interceda por missionários ao redor do mundo.",
-                "Ore por crescimento espiritual e intimidade com Deus. Peça perdão por seus pecados e ajuda para viver em santidade. Interceda por unidade na igreja e entre os cristãos."
-            ];
-
-            const forgivenessTemplates = [
-                "Reflita sobre relacionamentos que precisam de cura. Perdoe aqueles que te magoaram e peça perdão por suas próprias falhas. Lembre-se de que o perdão liberta tanto quem perdoa quanto quem é perdoado.",
-                "Examine seu coração em busca de amargura ou ressentimento. Entregue essas feridas a Deus e permita que Ele cure seu coração. Perdoe-se pelos erros do passado e aceite o perdão de Deus.",
-                "Pense em alguém com quem precisa se reconciliar. Peça a Deus coragem para dar o primeiro passo. Lembre-se de que Cristo nos perdoou primeiro, capacitando-nos a perdoar outros.",
-                "Reconheça diante de Deus as áreas onde você falhou. Aceite Seu perdão completo e perdoe-se. Considere como você pode demonstrar perdão e graça aos outros hoje.",
-                "Medite no perdão que Cristo oferece na cruz. Deixe que essa verdade transforme seu coração e suas atitudes. Perdoe como você foi perdoado - completamente e sem condições."
-            ];
-
-            // Generate content for each day of 2026
-            for (let month = 1; month <= 12; month++) {
-                const daysInMonth = new Date(2026, month, 0).getDate();
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dateStr = `2026-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-                    
-                    if (!devotionalContent[dateStr]) {
-                        const verseIndex = (month + day) % verses.length;
-                        const reflectionIndex = (month * day) % reflectionTemplates.length;
-                        const prayerIndex = (month + day * 2) % prayerTemplates.length;
-                        const prayerRequestIndex = (month * day + day) % prayerRequestTemplates.length;
-                        const forgivenessIndex = (month + day * 3) % forgivenessTemplates.length;
-                        
-                        devotionalContent[dateStr] = {
-                            verse: verses[verseIndex].text,
-                            reference: verses[verseIndex].ref,
-                            reflection: reflectionTemplates[reflectionIndex],
-                            prayer: prayerTemplates[prayerIndex],
-                            prayerRequest: prayerRequestTemplates[prayerRequestIndex],
-                            forgiveness: forgivenessTemplates[forgivenessIndex]
-                        };
-                    }
-                }
-            }
-        }
-
-        // Initialize devotional content
-        generateYearContent();
-
-        // Global state
-        let currentDate = new Date();
-        let currentView = 'today';
-        let userProgress = [];
-        
-        // Schema includes new fields for prayer requests and forgiveness reflections
-        // personal_prayer_request: string - user's personal prayer requests
-        // forgiveness_reflection: string - user's forgiveness reflections
-        let currentCalendarMonth = new Date(2026, 0, 1);
-        let isLoading = false;
-
-        // Default configuration
-        const defaultConfig = {
-            app_title: "Devocional 2026",
-            welcome_message: "Sua jornada espiritual diária através do ano",
-            background_color: "#dbeafe",
-            surface_color: "#ffffff", 
-            text_color: "#1f2937",
-            primary_action_color: "#4f46e5",
-            secondary_action_color: "#6b7280",
-            font_family: "system-ui",
-            font_size: 16
-        };
-
-        // Data SDK handler
-        const dataHandler = {
-            onDataChanged(data) {
-                userProgress = data;
-                updateProgressDisplay();
-                updateTodayView();
-                if (currentView === 'calendar') {
-                    renderCalendar();
-                } else if (currentView === 'favorites') {
-                    renderFavorites();
-                } else if (currentView === 'progress') {
-                    renderProgress();
-                }
-            }
-        };
-
-        // Element SDK functions
-        async function onConfigChange(config) {
-            const appTitle = config.app_title || defaultConfig.app_title;
-            const welcomeMessage = config.welcome_message || defaultConfig.welcome_message;
-            const backgroundColor = config.background_color || defaultConfig.background_color;
-            const surfaceColor = config.surface_color || defaultConfig.surface_color;
-            const textColor = config.text_color || defaultConfig.text_color;
-            const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
-            const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
-            const fontFamily = config.font_family || defaultConfig.font_family;
-            const fontSize = config.font_size || defaultConfig.font_size;
-
-            // Update text content
-            document.getElementById('app-title').textContent = appTitle;
-            document.getElementById('welcome-message').textContent = welcomeMessage;
-
-            // Update colors
-            document.body.style.background = `linear-gradient(to bottom right, ${backgroundColor}, ${primaryColor}20)`;
-            
-            const surfaces = document.querySelectorAll('.bg-white');
-            surfaces.forEach(el => el.style.backgroundColor = surfaceColor);
-            
-            const textElements = document.querySelectorAll('.text-gray-800, .text-gray-700');
-            textElements.forEach(el => el.style.color = textColor);
-            
-            const primaryButtons = document.querySelectorAll('.bg-indigo-600');
-            primaryButtons.forEach(el => {
-                el.style.backgroundColor = primaryColor;
-                el.style.borderColor = primaryColor;
-            });
-            
-            const secondaryButtons = document.querySelectorAll('.text-indigo-600');
-            secondaryButtons.forEach(el => {
-                el.style.color = secondaryColor;
-                el.style.borderColor = secondaryColor;
-            });
-
-            // Update fonts
-            const fontStack = `${fontFamily}, system-ui, sans-serif`;
-            document.body.style.fontFamily = fontStack;
-            
-            // Update font sizes proportionally
-            document.getElementById('app-title').style.fontSize = `${fontSize * 2.5}px`;
-            document.getElementById('welcome-message').style.fontSize = `${fontSize * 1.125}px`;
-            document.querySelectorAll('h2').forEach(el => el.style.fontSize = `${fontSize * 1.5}px`);
-            document.querySelectorAll('h3').forEach(el => el.style.fontSize = `${fontSize * 1.25}px`);
-            document.querySelectorAll('p, div, span, button, input, textarea').forEach(el => {
-                if (!el.style.fontSize) el.style.fontSize = `${fontSize}px`;
-            });
-        }
-
-        function mapToCapabilities(config) {
-            return {
-                recolorables: [
-                    {
-                        get: () => config.background_color || defaultConfig.background_color,
-                        set: (value) => {
-                            if (window.elementSdk) {
-                                window.elementSdk.setConfig({ background_color: value });
-                            }
-                        }
-                    },
-                    {
-                        get: () => config.surface_color || defaultConfig.surface_color,
-                        set: (value) => {
-                            if (window.elementSdk) {
-                                window.elementSdk.setConfig({ surface_color: value });
-                            }
-                        }
-                    },
-                    {
-                        get: () => config.text_color || defaultConfig.text_color,
-                        set: (value) => {
-                            if (window.elementSdk) {
-                                window.elementSdk.setConfig({ text_color: value });
-                            }
-                        }
-                    },
-                    {
-                        get: () => config.primary_action_color || defaultConfig.primary_action_color,
-                        set: (value) => {
-                            if (window.elementSdk) {
-                                window.elementSdk.setConfig({ primary_action_color: value });
-                            }
-                        }
-                    },
-                    {
-                        get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
-                        set: (value) => {
-                            if (window.elementSdk) {
-                                window.elementSdk.setConfig({ secondary_action_color: value });
-                            }
-                        }
-                    }
-                ],
-                borderables: [],
-                fontEditable: {
-                    get: () => config.font_family || defaultConfig.font_family,
-                    set: (value) => {
-                        if (window.elementSdk) {
-                            window.elementSdk.setConfig({ font_family: value });
-                        }
-                    }
-                },
-                fontSizeable: {
-                    get: () => config.font_size || defaultConfig.font_size,
-                    set: (value) => {
-                        if (window.elementSdk) {
-                            window.elementSdk.setConfig({ font_size: value });
-                        }
-                    }
-                }
-            };
-        }
-
-        function mapToEditPanelValues(config) {
-            return new Map([
-                ["app_title", config.app_title || defaultConfig.app_title],
-                ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
-            ]);
-        }
-
-        // Utility functions
-        function formatDate(date) {
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            return date.toLocaleDateString('pt-BR', options);
-        }
-
-        function getDateString(date) {
-            return date.toISOString().split('T')[0];
-        }
-
-        function getUserProgress(dateStr) {
-            return userProgress.find(p => p.date === dateStr);
-        }
-
-        async function saveProgress(dateStr, data) {
-            if (isLoading) return;
-            
-            const existing = getUserProgress(dateStr);
-            const progressData = {
-                date: dateStr,
-                completed: data.completed || false,
-                notes: data.notes || '',
-                favorite: data.favorite || false,
-                personal_prayer_request: data.personal_prayer_request || '',
-                forgiveness_reflection: data.forgiveness_reflection || ''
-            };
-
-            isLoading = true;
-            
-            try {
-                if (existing) {
-                    const updatedData = { ...existing, ...progressData };
-                    const result = await window.dataSdk.update(updatedData);
-                    if (!result.isOk) {
-                        showMessage('Erro ao salvar progresso', 'error');
-                    }
-                } else {
-                    if (userProgress.length >= 999) {
-                        showMessage('Limite máximo de 999 registros atingido. Exclua alguns registros primeiro.', 'error');
-                        return;
-                    }
-                    const result = await window.dataSdk.create(progressData);
-                    if (!result.isOk) {
-                        showMessage('Erro ao salvar progresso', 'error');
-                    }
-                }
-            } catch (error) {
-                showMessage('Erro ao salvar dados', 'error');
-            } finally {
-                isLoading = false;
-            }
-        }
-
-        function showMessage(text, type = 'success') {
-            const message = document.createElement('div');
-            message.className = `fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 ${
-                type === 'success' ? 'bg-green-500' : 'bg-red-500'
-            }`;
-            message.textContent = text;
-            document.body.appendChild(message);
-            
-            setTimeout(() => {
-                message.remove();
-            }, 3000);
-        }
-
-        // View functions
-        function showView(viewName) {
-            const views = ['today-view', 'calendar-view', 'favorites-view', 'progress-view'];
-            views.forEach(view => {
-                const element = document.getElementById(view);
-                if (element) {
-                    element.classList.add('hidden');
-                }
-            });
-            
-            const targetView = document.getElementById(`${viewName}-view`);
-            if (targetView) {
-                targetView.classList.remove('hidden');
-                targetView.classList.add('fade-in');
-            }
-            
-            currentView = viewName;
-            
-            // Update button states
-            const buttons = document.querySelectorAll('button[id$="-btn"]');
-            buttons.forEach(btn => {
-                if (btn.id === `${viewName}-btn`) {
-                    btn.className = 'bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors';
-                } else if (['today-btn', 'calendar-btn', 'favorites-btn', 'progress-btn'].includes(btn.id)) {
-                    btn.className = 'bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600 px-6 py-2 rounded-lg font-medium transition-colors';
-                }
-            });
-        }
-
-        function updateTodayView() {
-            const dateStr = getDateString(currentDate);
-            const content = devotionalContent[dateStr];
-            const progress = getUserProgress(dateStr);
-            
-            if (content) {
-                document.getElementById('today-date').textContent = formatDate(currentDate);
-                document.getElementById('today-verse-ref').textContent = content.reference;
-                document.getElementById('today-verse').textContent = `"${content.verse}"`;
-                document.getElementById('today-reflection').innerHTML = content.reflection.split('. ').map(sentence => 
-                    sentence.trim() ? `<p>${sentence.trim()}${sentence.endsWith('.') ? '' : '.'}</p>` : ''
-                ).join('');
-                document.getElementById('today-prayer').textContent = content.prayer;
-                document.getElementById('today-prayer-request').textContent = content.prayerRequest;
-                document.getElementById('today-forgiveness').textContent = content.forgiveness;
-                
-                // Update user data
-                const notesInput = document.getElementById('notes-input');
-                notesInput.value = progress?.notes || '';
-                
-                const prayerRequestInput = document.getElementById('personal-prayer-request');
-                prayerRequestInput.value = progress?.personal_prayer_request || '';
-                
-                const forgivenessInput = document.getElementById('forgiveness-reflection');
-                forgivenessInput.value = progress?.forgiveness_reflection || '';
-                
-                const completeBtn = document.getElementById('mark-complete-btn');
-                if (progress?.completed) {
-                    completeBtn.textContent = '✓ Lido';
-                    completeBtn.className = 'bg-green-700 text-white px-6 py-2 rounded-lg font-medium cursor-default';
-                } else {
-                    completeBtn.textContent = '✓ Marcar como Lido';
-                    completeBtn.className = 'bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors';
-                }
-                
-                const favoriteBtn = document.getElementById('favorite-btn');
-                favoriteBtn.textContent = progress?.favorite ? '⭐' : '☆';
-                favoriteBtn.style.color = progress?.favorite ? '#fbbf24' : '#9ca3af';
-            }
-        }
-
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid');
-            const monthName = currentCalendarMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-            document.getElementById('current-month').textContent = monthName;
-            
-            grid.innerHTML = '';
-            
-            // Days of week headers
-            const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            daysOfWeek.forEach(day => {
-                const header = document.createElement('div');
-                header.className = 'text-center font-semibold text-gray-600 p-2';
-                header.textContent = day;
-                grid.appendChild(header);
-            });
-            
-            // Calendar days
-            const firstDay = new Date(currentCalendarMonth.getFullYear(), currentCalendarMonth.getMonth(), 1);
-            const lastDay = new Date(currentCalendarMonth.getFullYear(), currentCalendarMonth.getMonth() + 1, 0);
-            const startDate = new Date(firstDay);
-            startDate.setDate(startDate.getDate() - firstDay.getDay());
-            
-            for (let i = 0; i < 42; i++) {
-                const date = new Date(startDate);
-                date.setDate(startDate.getDate() + i);
-                
-                const dayElement = document.createElement('div');
-                dayElement.className = 'p-2 text-center cursor-pointer rounded-lg transition-colors hover:bg-indigo-100';
-                
-                if (date.getMonth() !== currentCalendarMonth.getMonth()) {
-                    dayElement.className += ' text-gray-400';
-                } else {
-                    const dateStr = getDateString(date);
-                    const progress = getUserProgress(dateStr);
-                    
-                    if (progress?.completed) {
-                        dayElement.className += ' bg-green-100 text-green-800 font-semibold';
-                    } else if (progress?.favorite) {
-                        dayElement.className += ' bg-yellow-100 text-yellow-800';
-                    }
-                    
-                    if (dateStr === getDateString(new Date())) {
-                        dayElement.className += ' ring-2 ring-indigo-500';
-                    }
-                }
-                
-                dayElement.textContent = date.getDate();
-                dayElement.addEventListener('click', () => {
-                    if (date.getMonth() === currentCalendarMonth.getMonth()) {
-                        currentDate = new Date(date);
-                        updateTodayView();
-                        showView('today');
-                    }
-                });
-                
-                grid.appendChild(dayElement);
-            }
-        }
-
-        function renderFavorites() {
-            const container = document.getElementById('favorites-list');
-            const favorites = userProgress.filter(p => p.favorite);
-            
-            if (favorites.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhum devocional favorito ainda. Marque seus favoritos com ⭐</p>';
-                return;
-            }
-            
-            container.innerHTML = favorites.map(fav => {
-                const date = new Date(fav.date);
-                const content = devotionalContent[fav.date];
-                return `
-                    <div class="devotional-card border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md" 
-                         onclick="goToDate('${fav.date}')">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-semibold text-gray-800">${formatDate(date)}</h3>
-                            <span class="text-yellow-500">⭐</span>
-                        </div>
-                        <p class="text-sm text-indigo-600 mb-2">${content?.reference || ''}</p>
-                        <p class="text-gray-600 text-sm line-clamp-2">${content?.verse || ''}</p>
-                        ${fav.notes ? `<p class="text-xs text-gray-500 mt-2 italic">"${fav.notes}"</p>` : ''}
+        <!-- Today's Devotional -->
+        <main id="today-view" class="fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 id="today-date" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                        <p id="today-verse-ref" class="text-indigo-600 font-medium"></p>
                     </div>
-                `;
-            }).join('');
-        }
-
-        function renderProgress() {
-            const completedCount = userProgress.filter(p => p.completed).length;
-            document.getElementById('completed-count').textContent = completedCount;
-            
-            // Calculate streak
-            let streak = 0;
-            const today = new Date();
-            let checkDate = new Date(today);
-            
-            while (true) {
-                const dateStr = getDateString(checkDate);
-                const progress = getUserProgress(dateStr);
-                if (progress?.completed) {
-                    streak++;
-                    checkDate.setDate(checkDate.getDate() - 1);
-                } else {
-                    break;
-                }
-            }
-            
-            document.getElementById('streak-count').textContent = streak;
-            
-            // Monthly progress
-            const monthlyContainer = document.getElementById('monthly-progress');
-            const monthlyStats = {};
-            
-            userProgress.forEach(p => {
-                const date = new Date(p.date);
-                const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
-                if (!monthlyStats[monthKey]) {
-                    monthlyStats[monthKey] = { completed: 0, total: 0 };
-                }
-                monthlyStats[monthKey].total++;
-                if (p.completed) monthlyStats[monthKey].completed++;
-            });
-            
-            monthlyContainer.innerHTML = Object.entries(monthlyStats).map(([monthKey, stats]) => {
-                const [year, month] = monthKey.split('-');
-                const monthName = new Date(year, month, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-                const percentage = Math.round((stats.completed / stats.total) * 100);
-                
-                return `
-                    <div class="flex justify-between items-center">
-                        <span class="font-medium">${monthName}</span>
-                        <div class="flex items-center gap-2">
-                            <div class="w-32 bg-gray-200 rounded-full h-2">
-                                <div class="bg-indigo-600 h-2 rounded-full" style="width: ${percentage}%"></div>
-                            </div>
-                            <span class="text-sm text-gray-600">${stats.completed}/${stats.total}</span>
+                    <button id="favorite-btn" class="text-2xl hover:scale-110 transition-transform">⭐</button>
+                </div>
+                <div class="mb-6">
+                    <p id="today-verse" class="text-lg italic text-gray-700 mb-4 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-400"></p>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Reflexão</h3>
+                    <div id="today-reflection" class="text-gray-700 leading-relaxed space-y-3"></div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Oração</h3>
+                    <p id="today-prayer" class="text-gray-700 italic leading-relaxed"></p>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Pedido de Oração</h3>
+                    <p id="today-prayer-request" class="text-gray-700 leading-relaxed mb-3"></p>
+                    <textarea id="personal-prayer-request" placeholder="Escreva aqui seus pedidos pessoais de oração..." class="w-full p-3 border border-gray-300 rounded-lg resize-none h-20 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"></textarea>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Momento de Perdão</h3>
+                    <p id="today-forgiveness" class="text-gray-700 leading-relaxed mb-3"></p>
+                    <textarea id="forgiveness-reflection" placeholder="Reflita sobre perdão - a si mesmo, aos outros, ou peça perdão a Deus..." class="w-full p-3 border border-gray-300 rounded-lg resize-none h-20 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"></textarea>
+                </div>
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Minhas Anotações</h3>
+                    <textarea id="notes-input" placeholder="Escreva suas reflexões pessoais aqui..." class="w-full p-4 border border-gray-300 rounded-lg resize-none h-24 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
+                    <div class="flex justify-between items-center mt-4">
+                        <button id="mark-complete-btn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">✓ Marcar como Lido</button>
+                        <div class="flex gap-2">
+                            <button id="prev-day-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">← Anterior</button>
+                            <button id="next-day-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">Próximo →</button>
                         </div>
                     </div>
-                `;
-            }).join('');
-        }
+                </div>
+            </div>
+        </main>
 
-        function updateProgressDisplay() {
-            // This function is called when data changes to update any progress indicators
-            if (currentView === 'progress') {
-                renderProgress();
-            }
-        }
+        <!-- Calendar View -->
+        <div id="calendar-view" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Calendário 2026</h2>
+                    <div class="flex gap-2">
+                        <button id="prev-month-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">←</button>
+                        <span id="current-month" class="px-4 py-2 font-medium text-gray-800"></span>
+                        <button id="next-month-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">→</button>
+                    </div>
+                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
+            </div>
+        </div>
 
-        function goToDate(dateStr) {
-            currentDate = new Date(dateStr);
-            updateTodayView();
-            showView('today');
-        }
+        <!-- Favorites View -->
+        <div id="favorites-view" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Devocionais Favoritos</h2>
+                <div id="favorites-list" class="space-y-4"></div>
+            </div>
+        </div>
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize SDKs
-            if (window.dataSdk) {
-                const initResult = await window.dataSdk.init(dataHandler);
-                if (!initResult.isOk) {
-                    console.error('Failed to initialize data SDK');
-                }
-            }
+        <!-- Progress View -->
+        <div id="progress-view" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Seu Progresso</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-2">Dias Completados</h3>
+                        <p id="completed-count" class="text-3xl font-bold">0</p>
+                        <p class="text-green-100">de 365 dias</p>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-2">Sequência Atual</h3>
+                        <p id="streak-count" class="text-3xl font-bold">0</p>
+                        <p class="text-blue-100">dias consecutivos</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Progresso Mensal</h3>
+                    <div id="monthly-progress" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            if (window.elementSdk) {
-                window.elementSdk.init({
-                    defaultConfig,
-                    onConfigChange,
-                    mapToCapabilities,
-                    mapToEditPanelValues
-                });
-            }
-
-            // Set current date to today or January 1, 2026 if we're not in 2026
-            const today = new Date();
-            if (today.getFullYear() === 2026) {
-                currentDate = today;
-            } else {
-                currentDate = new Date(2026, 0, 1);
-            }
-
-            updateTodayView();
-
-            // Navigation buttons
-            document.getElementById('today-btn').addEventListener('click', () => showView('today'));
-            document.getElementById('calendar-btn').addEventListener('click', () => {
-                showView('calendar');
-                renderCalendar();
-            });
-            document.getElementById('favorites-btn').addEventListener('click', () => {
-                showView('favorites');
-                renderFavorites();
-            });
-            document.getElementById('progress-btn').addEventListener('click', () => {
-                showView('progress');
-                renderProgress();
-            });
-
-            // Today view controls
-            document.getElementById('mark-complete-btn').addEventListener('click', async () => {
-                const dateStr = getDateString(currentDate);
-                const progress = getUserProgress(dateStr);
-                
-                if (!progress?.completed) {
-                    await saveProgress(dateStr, { completed: true });
-                    showMessage('Devocional marcado como lido!');
-                }
-            });
-
-            document.getElementById('favorite-btn').addEventListener('click', async () => {
-                const dateStr = getDateString(currentDate);
-                const progress = getUserProgress(dateStr);
-                const newFavoriteState = !progress?.favorite;
-                
-                await saveProgress(dateStr, { favorite: newFavoriteState });
-                showMessage(newFavoriteState ? 'Adicionado aos favoritos!' : 'Removido dos favoritos!');
-            });
-
-            document.getElementById('notes-input').addEventListener('blur', async () => {
-                const dateStr = getDateString(currentDate);
-                const notes = document.getElementById('notes-input').value;
-                await saveProgress(dateStr, { notes });
-            });
-
-            document.getElementById('personal-prayer-request').addEventListener('blur', async () => {
-                const dateStr = getDateString(currentDate);
-                const personal_prayer_request = document.getElementById('personal-prayer-request').value;
-                await saveProgress(dateStr, { personal_prayer_request });
-            });
-
-            document.getElementById('forgiveness-reflection').addEventListener('blur', async () => {
-                const dateStr = getDateString(currentDate);
-                const forgiveness_reflection = document.getElementById('forgiveness-reflection').value;
-                await saveProgress(dateStr, { forgiveness_reflection });
-            });
-
-            document.getElementById('prev-day-btn').addEventListener('click', () => {
-                currentDate.setDate(currentDate.getDate() - 1);
-                updateTodayView();
-            });
-
-            document.getElementById('next-day-btn').addEventListener('click', () => {
-                currentDate.setDate(currentDate.getDate() + 1);
-                updateTodayView();
-            });
-
-            // Calendar controls
-            document.getElementById('prev-month-btn').addEventListener('click', () => {
-                currentCalendarMonth.setMonth(currentCalendarMonth.getMonth() - 1);
-                renderCalendar();
-            });
-
-            document.getElementById('next-month-btn').addEventListener('click', () => {
-                currentCalendarMonth.setMonth(currentCalendarMonth.getMonth() + 1);
-                renderCalendar();
-            });
-        });
-    </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99da052276b568cd',t:'MTc2Mjk5MjM1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html
+    <script type="module" src="js/app.js"></script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99da052276b568cd',t:'MTc2Mjk5MjM1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>
